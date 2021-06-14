@@ -8,6 +8,8 @@ image:
   repository: hobbyfarm/ec2-operator
   pullPolicy: Always
 
+threads: 20
+
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""

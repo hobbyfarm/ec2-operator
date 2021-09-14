@@ -69,6 +69,25 @@ func (a *AWSClient) CreateInstance(instance ec2v1alpha1.Instance) (status ec2v1a
 		if len(instance.Spec.KeyName) > 0 {
 			runInput = runInput.SetKeyName(instance.Spec.KeyName)
 		}
+
+		if len(instance.Spec.BlockDeviceMapping) > 0 {
+			blockDeviceList := []*awsec2.BlockDeviceMapping{}
+
+			for _, blockDevice := range instance.Spec.BlockDeviceMapping {
+				deviceInfo := &awsec2.BlockDeviceMapping{
+					DeviceName: aws.String(blockDevice.DeviceName),
+					Ebs: &awsec2.EbsBlockDevice{
+						VolumeSize:          aws.Int64(blockDevice.VolumeSize),
+						DeleteOnTermination: aws.Bool(blockDevice.DeleteOnTermination),
+					},
+				}
+
+				blockDeviceList = append(blockDeviceList, deviceInfo)
+			}
+
+			runInput.BlockDeviceMappings = blockDeviceList
+		}
+
 		reservation, err = a.svc.RunInstances(runInput)
 	}
 

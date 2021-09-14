@@ -49,7 +49,20 @@ spec:
           description: InstanceSpec defines the desired state of Instance
           properties:
             blockDeviceMapping:
-              type: string
+              items:
+                properties:
+                  deleteOnTermination:
+                    type: boolean
+                  deviceName:
+                    type: string
+                  volumeSize:
+                    format: int64
+                    type: integer
+                required:
+                - deviceName
+                - volumeSize
+                type: object
+              type: array
             credentialSecret:
               type: string
             iamInstanceProfile:

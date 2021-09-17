@@ -85,7 +85,10 @@ func (a *AWSClient) CreateInstance(instance ec2v1alpha1.Instance) (status ec2v1a
 
 		if instance.Spec.DeleteVolumesOnTermination {
 			for _, bdm := range blockDeviceMapping {
-				bdm.Ebs.DeleteOnTermination = aws.Bool(true)
+				// ignore non ebs backed volumes
+				if bdm.Ebs != nil {
+					bdm.Ebs.DeleteOnTermination = aws.Bool(true)
+				}
 			}
 		}
 

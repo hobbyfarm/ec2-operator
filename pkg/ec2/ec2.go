@@ -69,6 +69,30 @@ func (a *AWSClient) CreateInstance(instance ec2v1alpha1.Instance) (status ec2v1a
 		if len(instance.Spec.KeyName) > 0 {
 			runInput = runInput.SetKeyName(instance.Spec.KeyName)
 		}
+
+		rootDisk, blockDeviceMapping, err := a.lookupAMI(instance.Spec.ImageID)
+		if err != nil {
+			return status, err
+		}
+
+		if instance.Spec.RootDiskSize != 0 {
+			for _, bdm := range blockDeviceMapping {
+				if *bdm.DeviceName == rootDisk {
+					bdm.Ebs.VolumeSize = aws.Int64(int64(instance.Spec.RootDiskSize))
+				}
+			}
+		}
+
+		if instance.Spec.DeleteVolumesOnTermination {
+			for _, bdm := range blockDeviceMapping {
+				// ignore non ebs backed volumes
+				if bdm.Ebs != nil {
+					bdm.Ebs.DeleteOnTermination = aws.Bool(true)
+				}
+			}
+		}
+
+		runInput.BlockDeviceMappings = blockDeviceMapping
 		reservation, err = a.svc.RunInstances(runInput)
 	}
 
@@ -195,4 +219,21 @@ func (a *AWSClient) DeleteKeyPair(keypair ec2v1alpha1.ImportKeyPair) (err error)
 	})
 
 	return err
+}
+
+// lookupAMI is needed to ensure that we can delete ebs volumes on termination
+func (a *AWSClient) lookupAMI(ami string) (rootDisk string, additionalVols []*awsec2.BlockDeviceMapping, err error) {
+	images, err := a.svc.DescribeImages(
+		&awsec2.DescribeImagesInput{
+			ImageIds: []*string{&ami},
+		})
+
+	if err != nil {
+		return rootDisk, additionalVols, err
+	}
+
+	rootDisk = *images.Images[0].RootDeviceName
+	additionalVols = images.Images[0].BlockDeviceMappings
+
+	return rootDisk, additionalVols, nil
 }

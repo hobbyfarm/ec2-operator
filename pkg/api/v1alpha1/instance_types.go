@@ -25,19 +25,20 @@ import (
 
 // InstanceSpec defines the desired state of Instance
 type InstanceSpec struct {
-	BlockDeviceMapping string   `json:"blockDeviceMapping,omitempty"`
-	ImageID            string   `json:"imageID"`
-	InstanceType       string   `json:"instanceType"`
-	KeyName            string   `json:"keyname,omitempty"`
-	SecurityGroupIDS   []string `json:"securityGroupIDS,omitempty"`
-	SecurityGroups     []string `json:"securityGroups,omitempty"`
-	SubnetID           string   `json:"subnetID,omitempty"`
-	UserData           string   `json:"userData,omitempty"`
-	IAMInstanceProfile string   `json:"iamInstanceProfile,omitempty"`
-	TagSpecifications  []Tags   `json:"tagSpecification,omitempty"`
-	Secret             string   `json:"credentialSecret"` // K8S secret containing the account creds //
-	PublicIPAddress    bool     `json:"publicIPAddress,omitEmpty"`
-	Region             string   `json:"region"`
+	RootDiskSize               int      `json:"rootDiskSize,omitempty"`
+	ImageID                    string   `json:"imageID"`
+	InstanceType               string   `json:"instanceType"`
+	KeyName                    string   `json:"keyname,omitempty"`
+	SecurityGroupIDS           []string `json:"securityGroupIDS,omitempty"`
+	SecurityGroups             []string `json:"securityGroups,omitempty"`
+	SubnetID                   string   `json:"subnetID,omitempty"`
+	UserData                   string   `json:"userData,omitempty"`
+	IAMInstanceProfile         string   `json:"iamInstanceProfile,omitempty"`
+	TagSpecifications          []Tags   `json:"tagSpecification,omitempty"`
+	Secret                     string   `json:"credentialSecret"` // K8S secret containing the account creds //
+	PublicIPAddress            bool     `json:"publicIPAddress,omitempty"`
+	Region                     string   `json:"region"`
+	DeleteVolumesOnTermination bool     `json:"deleteVolumesOnTermination,omitempty"`
 }
 
 type Tags struct {

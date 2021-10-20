@@ -100,6 +100,10 @@ func (a *AWSClient) CreateInstance(instance ec2v1alpha1.Instance) (status ec2v1a
 		return status, err
 	}
 
+	if len(reservation.Instances) == 0 {
+		return status, fmt.Errorf("no instance returned by aws api, likely issue with api call, retry again")
+	}
+
 	status.InstanceID = *reservation.Instances[0].InstanceId
 	status.PrivateIP = *reservation.Instances[0].PrivateIpAddress
 	status.Status = WaitForTag

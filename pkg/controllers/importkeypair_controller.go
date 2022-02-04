@@ -47,9 +47,8 @@ type ImportKeyPairReconciler struct {
 // +kubebuilder:rbac:groups=ec2.cattle.io,resources=importkeypairs,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=ec2.cattle.io,resources=importkeypairs/status,verbs=get;update;patch
 
-func (r *ImportKeyPairReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
+func (r *ImportKeyPairReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	keypairFinalizer := "keypair.cattle.io"
-	ctx := context.Background()
 	log := r.Log.WithValues("importkeypair", req.NamespacedName)
 
 	var keypair ec2v1alpha1.ImportKeyPair

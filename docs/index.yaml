@@ -2,6 +2,15 @@ apiVersion: v1
 entries:
   ec2-operator:
   - apiVersion: v2
+    appVersion: v0.2.0-rc1
+    created: "2023-03-17T18:20:29.805621748Z"
+    description: A Helm chart for Kubernetes
+    digest: 2ae1f38c5a1e1fcfbc88de18471f790f7f669a442da8656ade08357210ace90f
+    name: ec2-operator
+    urls:
+    - https://github.com/hobbyfarm/ec2-operator/releases/download/ec2-operator-v0.2.0-rc1/ec2-operator-v0.2.0-rc1.tgz
+    version: v0.2.0-rc1
+  - apiVersion: v2
     appVersion: v0.1.9
     created: "2022-06-02T19:47:26.645887224Z"
     description: A Helm chart for Kubernetes
